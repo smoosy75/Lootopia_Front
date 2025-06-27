@@ -7,11 +7,20 @@ type AuthContextType = {
   logout: () => void;
 };
 
-type User = {
+/*type User = {
   name: string;
   email: string;
   role: "admin" | "organisateur" | "joueur" | "pro";
-};
+};*/
+
+export type UserRole = "admin" | "joueur" | "organisateur" | "pro";
+
+export interface User {
+  name: string;
+  email: string;
+  role: UserRole;
+  token: string;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
