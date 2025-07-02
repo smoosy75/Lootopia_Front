@@ -32,8 +32,15 @@ export async function register(
     body: JSON.stringify({ email, password, nickname }),
   });
 
-  if (!res.ok) {
+  if (res.ok) return;
+
+  // Lecture du corps une seule fois
+  const contentType = res.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
     const data = await res.json();
     throw new Error(data.message || "Erreur d'inscription");
+  } else {
+    const text = await res.text();
+    throw new Error(text || "Erreur d'inscription");
   }
 }
