@@ -3,6 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useNavigate } from "react-router-dom";
+import { register as apiRegister } from "@/api/auth";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 
-// Définir le schéma de validation avec zod
+// Schéma de validation
 const FormSchema = z
   .object({
     fullName: z.string().min(2, {
@@ -41,10 +43,12 @@ const FormSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Les mots de passe ne correspondent pas.",
-    path: ["confirmPassword"], // Champ où afficher l'erreur
+    path: ["confirmPassword"],
   });
 
 function Register() {
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -56,25 +60,16 @@ function Register() {
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    console.log("Données soumises :", data);
-
     try {
-      const response = await fetch("http://localhost:5000/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        console.log("Inscription réussie");
-        // Rediriger ou afficher un message de succès
-      } else {
-        console.error("Erreur lors de l'inscription");
-      }
+      await apiRegister(data.email, data.password, data.fullName);
+      alert("Inscription réussie ! Vous pouvez maintenant vous connecter.");
+      navigate("/login");
     } catch (error) {
-      console.error("Erreur réseau :", error);
+      if (error instanceof Error) {
+        alert("Erreur : " + error.message);
+      } else {
+        alert("Une erreur inconnue est survenue.");
+      }
     }
   };
 
