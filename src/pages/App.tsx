@@ -5,6 +5,11 @@ import Register from "./Register";
 import Login from "./Login";
 // Home.tsx est situé à la racine src/, on remonte d’un dossier
 import Home from "../Home";
+import CreateHunt from "./CreateHunt";
+import CustomHuntGame from "./CustomHuntGame";
+
+
+import CustomHunt from "./CustomHunt";
 
 import Dashboard from "./Admin/Dashboard";
 import MyHunts from "./MyHunts";
@@ -189,6 +194,35 @@ function AppRoutes() {
             </PrivateRoute>
           }
         />
+ <Route
+  path="/create"
+  element={
+    <Layout>
+      <CreateHunt />
+    </Layout>
+  }
+/>
+<Route
+  path="/game/custom"
+  element={
+    <PrivateRoute>
+      <Layout>
+        <CustomHunt />
+      </Layout>
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/custom-game/:huntId"
+  element={
+    <PrivateRoute>
+      <CustomHuntGame />
+    </PrivateRoute>
+  }
+/>
+
+
+
       </Routes>
     </Router>
   );
