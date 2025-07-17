@@ -1,5 +1,5 @@
-// src/components/Card.tsx
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 function Card({
@@ -12,6 +12,7 @@ function Card({
   image: string;
 }) {
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -65,8 +66,8 @@ function Card({
                 <Button
                   className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
                   onClick={() => {
-                    console.log("Jouer à :", title);
                     setShowModal(false);
+                    navigate("/game");
                   }}
                 >
                   Jouer
