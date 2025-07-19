@@ -36,7 +36,7 @@ function Home() {
       description:
         "Une aventure mystique dans le centre historique de Paris vous attend.",
       image:
-       " https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyiM6qu7Dr82p9O8bO4Nyjj4ZJz2Ymq2p9Dw&s",
+        " https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyiM6qu7Dr82p9O8bO4Nyjj4ZJz2Ymq2p9Dw&s",
     },
     {
       id: 3,
@@ -44,7 +44,7 @@ function Home() {
       description:
         "Explorez les secrets du parc des Buttes-Chaumont à Paris, une chasse pleine de surprises.",
       image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTunixK1_g2IGBweMCnSSldG5gtdWdtn2lz3A&s"
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTunixK1_g2IGBweMCnSSldG5gtdWdtn2lz3A&s",
     },
     {
       id: 4,
@@ -54,7 +54,6 @@ function Home() {
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQLJ--tuuLU0dRDS8Ez4DxuJ_52OOnhpulWQ&s",
     },
-    
   ];
 
   const customHunts = JSON.parse(localStorage.getItem("customHunts") || "[]");
@@ -84,18 +83,23 @@ function Home() {
         />
       </div>
 
-      <div className="text-center my-6">
-        <Button
-          onClick={() => navigate("/create")}
-          className="bg-[#FAD99B] text-[#283541] font-bold px-6 py-2 rounded hover:bg-[#e6c17c]"
-        >
-          ➕ Créer une chasse personnalisée
-        </Button>
-      </div>
+      {isAuthenticated && (
+        <div className="text-center my-6">
+          <Button
+            onClick={() => navigate("/create")}
+            className="bg-[#FAD99B] text-[#283541] font-bold px-6 py-2 rounded hover:bg-[#e6c17c]"
+          >
+            ➕ Créer une chasse personnalisée
+          </Button>
+        </div>
+      )}
 
       {/* Carrousel */}
-      <div className="container mx-auto pb-28 relative px-4">
-        <Carousel plugins={[plugin.current]} opts={{ align: "start", loop: true }}>
+      <div className="container mx-auto pb-28 relative px-4 mt-10">
+        <Carousel
+          plugins={[plugin.current]}
+          opts={{ align: "start", loop: true }}
+        >
           <CarouselContent className="-ml-2 md:-ml-4">
             {allCards.map((card) => (
               <CarouselItem
