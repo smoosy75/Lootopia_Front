@@ -18,7 +18,7 @@ import { useRef } from "react";
 
 function Home() {
   const plugin = useRef(Autoplay({ delay: 4000, stopOnInteraction: false }));
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
   const cards = [
@@ -83,16 +83,17 @@ function Home() {
         />
       </div>
 
-      {isAuthenticated && (
-        <div className="text-center my-6">
-          <Button
-            onClick={() => navigate("/create")}
-            className="bg-[#FAD99B] text-[#283541] font-bold px-6 py-2 rounded hover:bg-[#e6c17c]"
-          >
-            ➕ Créer une chasse personnalisée
-          </Button>
-        </div>
-      )}
+      {isAuthenticated &&
+        (user?.role === "organisateur" || user?.role === "admin") && (
+          <div className="text-center my-6">
+            <Button
+              onClick={() => navigate("/create")}
+              className="bg-[#FAD99B] text-[#283541] font-bold px-6 py-2 rounded hover:bg-[#e6c17c]"
+            >
+              ➕ Créer une chasse personnalisée
+            </Button>
+          </div>
+        )}
 
       {/* Carrousel */}
       <div className="container mx-auto pb-28 relative px-4 mt-10">
