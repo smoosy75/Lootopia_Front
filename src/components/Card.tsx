@@ -1,53 +1,109 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 function Card({
   title,
   description,
   image,
+  isCustom = false,
+  steps = [],
 }: {
   title: string;
   description: string;
   image: string;
+  isCustom?: boolean;
+  steps?: any[];
 }) {
-  return (
-    <div className="max-w-sm mx-auto rounded-lg shadow-lg overflow-hidden border-4 border-[#D4AF37] bg-[#F2E2C5] card-hover">
-      <div className="bg-[#4A606B] text-white text-center py-4 relative">
-        <h2 className="text-xl font-bold">{title}</h2>
-        <div className="absolute top-1/2 left-0 w-4 h-4 bg-[#D4AF37] rounded-full transform -translate-y-1/2 -translate-x-1/2"></div>
-        <div className="absolute top-1/2 right-0 w-4 h-4 bg-[#D4AF37] rounded-full transform -translate-y-1/2 translate-x-1/2"></div>
-      </div>
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
-      <div className="h-48 relative">
+  const handleDelete = () => {
+    const existing = JSON.parse(localStorage.getItem("customHunts") || "[]");
+    const updated = existing.filter((hunt) => hunt.name !== title);
+    localStorage.setItem("customHunts", JSON.stringify(updated));
+    window.location.reload(); // recharge la page pour supprimer la tuile
+  };
+
+ const handlePlay = () => {
+  if (isCustom) {
+    const id = encodeURIComponent(title); // ou un ID unique si tu veux
+    localStorage.setItem(`customSteps-${id}`, JSON.stringify(steps));
+    navigate(`/custom-game/${id}`);
+  } else {
+    navigate("/game");
+  }
+};
+
+
+  return (
+    <>
+      <div className="max-w-sm mx-auto rounded-xl overflow-hidden shadow-lg border-4 border-[#D4AF37] bg-[#f5f5f5] hover:scale-105 transition-transform">
+        <div className="bg-[#4A606B] text-white text-center py-3 relative">
+          <h2 className="text-xl font-semibold">{title}</h2>
+        </div>
+
         <img
           src={image}
           alt={title}
-          className="w-full h-full object-cover border-t-4 border-b-4 border-[#D4AF37]"
+          className="w-full h-48 object-cover border-y-4 border-[#D4AF37]"
         />
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/50 to-transparent"></div>
+
+        <div className="p-4 text-center">
+          <p className="text-gray-800">{description}</p>
+          <Button
+            className="mt-4 bg-[#8e610c] text-white px-6 py-2 rounded-full hover:bg-[#2c562b]"
+            onClick={() => setShowModal(true)}
+          >
+            Découvrir
+          </Button>
+        </div>
       </div>
 
-      <div className="bg-[#F2E2C5] p-4 text-center relative flex flex-col items-center justify-center space-y-4">
-        <p className="text-gray-800">{description}</p>
-        <Button className="bg-[#8e610c] text-white rounded-full px-6 py-2 hover:bg-[#2c562b] flex items-center justify-center space-x-2 hover:cursor-pointer">
-          <span>Découvrir</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 2.25c-5.376 0-9.75 4.374-9.75 9.75s4.374 9.75 9.75 9.75 9.75-4.374 9.75-9.75-4.374-9.75-9.75-9.75zm0 1.5a8.25 8.25 0 1 1 0 16.5 8.25 8.25 0 0 1 0-16.5zm2.25 4.5-1.5 4.5-4.5 1.5 1.5-4.5 4.5-1.5z"
-            />
-          </svg>
-        </Button>
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-10 h-1 bg-[#D4AF37] rounded-full"></div>
-      </div>
-    </div>
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl overflow-hidden shadow-xl w-11/12 max-w-2xl relative">
+            <img src={image} alt="Aperçu" className="w-full h-64 object-cover" />
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-center mb-4 text-[#4A606B]">
+                {title}
+              </h2>
+              <p className="text-gray-700 leading-relaxed text-center mb-6">
+                {description}
+              </p>
+              <div className="flex justify-center gap-4">
+                <Button
+                  className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+                  onClick={() => setShowModal(false)}
+                >
+                  Retour
+                </Button>
+                <Button
+                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                  onClick={handlePlay}
+                >
+                  Jouer
+                </Button>
+                {isCustom && (
+                  <Button
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    onClick={handleDelete}
+                  >
+                    🗑️ Supprimer
+                  </Button>
+                )}
+              </div>
+            </div>
+            <button
+              className="absolute top-3 right-4 text-white text-xl bg-black/50 rounded-full w-8 h-8 flex items-center justify-center hover:bg-black"
+              onClick={() => setShowModal(false)}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

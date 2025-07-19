@@ -1,7 +1,16 @@
+// src/pages/App.tsx
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Register from "./Register";
 import Login from "./Login";
+// Home.tsx est situé à la racine src/, on remonte d’un dossier
 import Home from "../Home";
+import CreateHunt from "./CreateHunt";
+import CustomHuntGame from "./CustomHuntGame";
+
+
+import CustomHunt from "./CustomHunt";
+
 import Dashboard from "./Admin/Dashboard";
 import MyHunts from "./MyHunts";
 import Layout from "../components/Layout";
@@ -17,15 +26,20 @@ import AdminStats from "./Admin/AdminStats";
 import AdminModeration from "./Admin/AdminModeration";
 import PartnerHome from "./Partner/PartnerHome";
 import PartnerSponsors from "./Partner/PartnerSponsors";
+
+// La page de jeu est dans src/pages, on importe depuis ce même dossier
+import TreasureHunt from "./TreasureHunt";
+
 import Footer from "../components/Footer";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? children : <Home />;
+  return isAuthenticated ? <>{children}</> : <Home />;
 }
 
 function AppRoutes() {
   const { isAuthenticated } = useAuth();
+
   return (
     <Router>
       <Routes>
@@ -33,6 +47,7 @@ function AppRoutes() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
+        {/* Page d’accueil */}
         <Route
           path="/"
           element={
@@ -48,6 +63,9 @@ function AppRoutes() {
             )
           }
         />
+
+        {/* Page de jeu */}
+        <Route path="/game" element={<TreasureHunt />} />
 
         {/* Routes privées ADMIN */}
         <Route
@@ -92,7 +110,6 @@ function AppRoutes() {
         />
 
         {/* Routes privées ORGANISATEUR */}
-
         <Route
           path="/organizer/hunts/create"
           element={
@@ -156,7 +173,7 @@ function AppRoutes() {
           }
         />
 
-        {/* Routes privées PRO/PARTENAIRE */}
+        {/* Routes privées PARTENAIRE */}
         <Route
           path="/partner/home"
           element={
@@ -177,17 +194,44 @@ function AppRoutes() {
             </PrivateRoute>
           }
         />
+ <Route
+  path="/create"
+  element={
+    <Layout>
+      <CreateHunt />
+    </Layout>
+  }
+/>
+<Route
+  path="/game/custom"
+  element={
+    <PrivateRoute>
+      <Layout>
+        <CustomHunt />
+      </Layout>
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/custom-game/:huntId"
+  element={
+    <PrivateRoute>
+      <CustomHuntGame />
+    </PrivateRoute>
+  }
+/>
+
+
+
       </Routes>
     </Router>
   );
 }
 
-function App() {
+export default function App() {
   return (
     <AuthProvider>
       <AppRoutes />
     </AuthProvider>
   );
 }
-
-export default App;
