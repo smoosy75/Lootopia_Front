@@ -21,6 +21,7 @@ function Home() {
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
+  // ✅ Chasses classiques
   const cards = [
     {
       id: 1,
@@ -33,10 +34,9 @@ function Home() {
     {
       id: 2,
       title: "Chasse 2",
-      description:
-        "Une aventure mystique dans le centre historique de Paris vous attend.",
+      description: "Une aventure mystique dans le centre historique de Paris vous attend.",
       image:
-        " https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyiM6qu7Dr82p9O8bO4Nyjj4ZJz2Ymq2p9Dw&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyiM6qu7Dr82p9O8bO4Nyjj4ZJz2Ymq2p9Dw&s",
     },
     {
       id: 3,
@@ -56,14 +56,16 @@ function Home() {
     },
   ];
 
+  // ✅ Chasses personnalisées
   const customHunts = JSON.parse(localStorage.getItem("customHunts") || "[]");
 
   const customCards = customHunts.map((hunt, index) => ({
     id: `custom-${index}`,
-    title: hunt.name,
-    description: "Chasse personnalisée créée par l’utilisateur.",
+    title: hunt.title, // ✅ bon champ
+    description: hunt.description || "Chasse personnalisée créée par l’utilisateur.",
     image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Pantheon_Paris.jpg/800px-Pantheon_Paris.jpg", // image par défaut
+      hunt.image ||
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Pantheon_Paris.jpg/800px-Pantheon_Paris.jpg",
     isCustom: true,
     steps: hunt.steps,
   }));
@@ -83,6 +85,7 @@ function Home() {
         />
       </div>
 
+      {/* Bouton Créer une chasse */}
       {isAuthenticated &&
         (user?.role === "organisateur" || user?.role === "admin") && (
           <div className="text-center my-6">
