@@ -31,6 +31,14 @@ function CreateHunt() {
     }
 
     const existing = JSON.parse(localStorage.getItem("customHunts") || "[]");
+
+    const formattedSteps = steps.map((step) => ({
+      lat: parseFloat(step.lat),
+      lng: parseFloat(step.lng),
+      question: step.question.trim(),
+      answer: step.answer.trim().toLowerCase(),
+    }));
+
     const newHunt = {
       id: Date.now(),
       title: huntName,
@@ -38,7 +46,7 @@ function CreateHunt() {
       image:
         imageUrl ||
         "https://upload.wikimedia.org/wikipedia/commons/4/42/Parc_aux_Li%C3%A8vres_batiment_7_%C3%89vry.jpg",
-      steps,
+      steps: formattedSteps,
     };
 
     const updated = [...existing, newHunt];
